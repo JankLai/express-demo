@@ -1,0 +1,79 @@
+
+use('mongodbVSCodePlaygroundDB');
+db.sales.find();
+//db.sales.remove({item : 'abc'})
+
+//sub-documents:collections下的子文档（其实就相当于子对象集合）
+db.sales.update({_id : 2},
+{
+    $set : {
+        comments:[
+            {
+                user: 'xxx',
+                body: 'comment one',
+                data: Date()
+            },
+            {
+                user: 'xxx2',
+                body: 'comment two',
+                data: Date()
+            },
+        ]
+    }
+})
+
+use('mongodbVSCodePlaygroundDB');
+db.sales.find({_id : 2})//.pretty()
+
+
+use('mongodbVSCodePlaygroundDB');
+db.sales.find({
+    comments:{
+        $elemMatch : {
+            user : 'xxx'
+        }
+    }
+})
+use('mongodbVSCodePlaygroundDB');
+db.sales.createIndex({item : 'text'}) //为"item"字段添加文本类型索引，方便查询
+
+
+use('mongodbVSCodePlaygroundDB');
+db.sales.find({
+    $text : {
+        $search : "\"jkl\"" //jk O? jk T?
+    }
+})
+
+use('mongodbVSCodePlaygroundDB');
+db.sales.update({_id:2}, {
+    $rename : {
+        "sales 1" : "item_renamed" //改变键名
+    }
+})
+
+use('mongodbVSCodePlaygroundDB');
+db.sales.find().sort({price : -1}).limit(3) //从大到小排序
+
+
+use('mongodbVSCodePlaygroundDB');
+db.sales.find().forEach(function(a){
+    print(`this sale price is ${a.price}`)
+})
+
+use('mongodbVSCodePlaygroundDB');
+db.sales.update(
+    {
+        'price' : 2
+    },
+    {
+        $set:{
+            quantity : 50,
+            date : Date()
+        }
+        
+    },
+    {
+        upsert : true //不存在则插入
+    }
+)
